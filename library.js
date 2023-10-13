@@ -25,7 +25,7 @@ title: "Pride and Prejudice",
 author: "Jane Austen", 
 year: 1813,
 pages: 432 
-} ]
+}, ]
 
 /* 1. Total Number of Pages: Write a function getTotalPages that calculates and returns the total number of pages in the library. */
 
@@ -55,7 +55,7 @@ let getBooksPublishedAfterYear = library.filter((book) => {
 })
 console.log(getBooksPublishedAfterYear);
 
-/*4.Average Number of Pages: Write a function getAveragePages that calculates and returns the average number of pagens across all books in the library. */
+/*4.Average Number of Pages: Write a function getAveragePages that calculates and returns the average number of pages across all books in the library. */
 
 let getAveragePages = (library.reduce((acc, currentBook) =>{
   return (acc+currentBook.pages);
@@ -64,15 +64,85 @@ let getAveragePages = (library.reduce((acc, currentBook) =>{
 console.log(getAveragePages);
 
 /*5.Longest Book: Write a function getLongestBook that returns the title of the book with the most pages*/
- let maximumPage = 0;
+let maximumPage = 0;
 let getLongestBook = library.reduce((maximumPage, book) => {
     maximumPage = (maximumPage > book.pages) ? maximumPage : book.pages;
     return maximumPage;
-},0);
-console.log(getLongestBook);
+},0)
+
+library.forEach((book) => {
+    if(getLongestBook === book.pages)
+    {
+        console.log(book.title);
+        return;
+    }
+})
 
 /*6.Authors and Their Books: Write a function getAuthorsAndBooks that returns an object where the keys are author names and the values are arrays of book titles written by each author.*/
 
+let getAuthorsAndBooks = library.reduce((acc, book)=>{
+   let authorName = book.author;
+   acc[authorName] = [book.title];
+   return acc;
+},{})
+console.log(getAuthorsAndBooks);
+
+
 /*7. Total Number of Pages by Author: Write a function getTotalPagesByAuthor that returns an object where the keys are author names and the values are the total number of pages of books written by each author.*/
+/*Value will be total page count of all the books written by that author
+If author A has written 5 books , then value will be sum of all pages of those 5 books */
+// let getTotalNumberOfPages = library.reduce((acc, book)=>{
+//     return acc + book.pages;
+// },0);
+let getTotalNumberOfPages = (authorName)=>{
+    let sum = 0;
+    for(let i = 0; i<library.length; i++)
+    {
+        if(library[i].author === authorName)
+        {
+           sum = sum+library[i].pages;
+        }
+    }
+    return sum;
+}
+let getTotalPagesByAuthor = library.reduce((acc, book)=>{
+   let authorName = book.author;
+   acc[authorName] = getTotalNumberOfPages(authorName);
+   return acc;
+},{})
+
+console.log(getTotalPagesByAuthor);
 
 /*8.Advanced: Filter and Map: Write a function getShortestBookByAuthor that returns an object where the keys are author names and the values are the titles of the shortest book written by each author.*/
+let getTitlesOfShortestBookByAuthor = function(authorName) {
+    let shortestBook ;
+    let count = 0;
+    let titleOfBook;
+    for(let i = 0; i<library.length; i++)
+    {
+        if(authorName===library[i].author)
+        {
+            count++;
+            if(count===1)
+            {
+                shortestBook = library[i].pages;
+            }
+           shortestBook = library[i].pages < shortestBook ? library[i].pages : shortestBook ;
+        }
+        
+    }
+    for (const book of library) {
+        if(book.pages===shortestBook && book.author===authorName)
+        {
+            titleOfBook = book.title;
+        }
+    }
+    return titleOfBook;
+}
+let getShortestBookByAuthor = library.reduce((acc, book)=>{
+   let authorName = book.author;
+   acc[authorName] = getTitlesOfShortestBookByAuthor(authorName);
+   return acc;
+},{})
+
+console.log(getShortestBookByAuthor);
